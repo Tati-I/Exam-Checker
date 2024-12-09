@@ -21,7 +21,5 @@
 2. **الدخول الى ال class الخاص بالمشروع:**
    ```bash
    cd ExamChecker\src\corrector\exam
-3. **تشغيل الكود في terminal عن طريق لغة جافا:**
-   ```bash
    
    
