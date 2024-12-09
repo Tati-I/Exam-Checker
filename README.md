@@ -17,4 +17,4 @@
 
 1. **استنساخ المشروع:**
    ```bash
-   git clone https://github.com/yourusername/ExamChecker.git
+   https://github.com/Tati-I/Exam-Checker.git
