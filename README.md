@@ -18,3 +18,6 @@
 1. **استنساخ المشروع:**
    ```bash
    git clone https://github.com/Tati-I/ExamChecker.git
+2. **الدخول الى ال class الخاص بالمشروع:**
+   ```bash
+   cd ExamChecker\src\corrector\exam
