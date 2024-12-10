@@ -62,7 +62,26 @@
    - **الوصف:** يعرض تقريرًا كاملًا عن نتائج الاختبار.
    - **الاستخدام:**
      ```java
-     System.out.println(examChecker.toString());
+     System.out.println(examChecker);
+     ```
+
+     ### الوظائف (Methods) الجديدة:
+
+1. **setMaxScore(int score):**
+   - **الوصف:** تحدد العلامة الكاملة للاختبار.
+   - **المُدخلات:** عدد صحيح يمثل العلامة الكاملة (مثل 100 أو 500).
+   - **الاستخدام:**
+     ```java
+     examChecker.setMaxScore(100);
+     ```
+
+2. **getScore():**
+   - **الوصف:** تحسب العلامة النهائية للطالب بناءً على الإجابات الصحيحة والعلامة الكاملة.
+   - **المُخرجات:** رقم عشري يمثل العلامة النهائية للطالب.
+   - **الاستخدام:**
+     ```java
+     double studentScore = examChecker.getScore();
+     System.out.println("علامة الطالب: " + studentScore);
      ```
 
 ---
