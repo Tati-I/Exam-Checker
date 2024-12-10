@@ -87,6 +87,11 @@ public class ExamChecker {
         return ((double) correctCount / correctAnswers.size()) * maxScore;
     }
 
+    public double getScore(){
+        checkAnswers();
+        return calculateScore();
+    }
+
     @Override
     public String toString() {
         checkAnswers();
