@@ -1,5 +1,22 @@
-### IntelliJ IDEA ###
+# IntelliJ IDEA specific
+.idea/
+*.iml
+
+# Build directories
 /bin/
 /target/
-/out/
-/*.class
+*/out/
+
+# Class files
+*.class
+
+# Logs
+*.log
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Misc
+*.bak
+*.tmp
