@@ -70,19 +70,19 @@
 
    ```java
 
-   // تحديد الإجابات الصحيحة
+// تحديد الإجابات الصحيحة
 
    examChecker.setCorrectAnswers(List.of('A', 'B', 'C', 'D'));
 
    
 
-   // تحديد إجابات الطالب
+// تحديد إجابات الطالب
 
    examChecker.setStudentAnswers(List.of('A', 'B', 'C', 'A'));
 
    
 
-   // إضافة طالب
+// إضافة طالب
 
    Student student = new Student("احمد", "12345", List.of('A', 'B', 'C', 'A'));
 
@@ -94,19 +94,19 @@
 
    ```java
 
-   // تعيين وزن لأسئلة محددة
+// تعيين وزن لأسئلة محددة
 
    examChecker.setQuestionWeight(0, 1.5); // السؤال الأول له وزن أكبر
 
    
 
-   // تحديد خيارات الإجابات المقبولة
+// تحديد خيارات الإجابات المقبولة
 
    examChecker.setValidOptions(List.of('A', 'B', 'C', 'D', 'E'));
 
    
 
-   // تحديد سؤال كصحيح دائمًا
+// تحديد سؤال كصحيح دائمًا
 
    examChecker.setAlwaysCorrectQuestion(2); // السؤال الثالث دائمًا صحيح
 
@@ -116,13 +116,13 @@
 
    ```java
 
-   // تحديد الدرجة الكاملة
+// تحديد الدرجة الكاملة
 
    examChecker.setMaxScore(100);
 
    
 
-   // الحصول على عدد الإجابات الصحيحة والخاطئة
+// الحصول على عدد الإجابات الصحيحة والخاطئة
 
    int correctCount = examChecker.getCorrectCount();
 
@@ -130,7 +130,7 @@
 
    
 
-   // حساب الدرجة النهائية
+// حساب الدرجة النهائية
 
    double score = examChecker.getScore();
 
@@ -140,13 +140,13 @@
 
    ```java
 
-   // عرض نتائج جميع الطلاب
+// عرض نتائج جميع الطلاب
 
    String allScores = examChecker.getStudentsScores();
 
    
 
-   // البحث عن طالب برقمه
+// البحث عن طالب برقمه
 
    Student specificStudent = examChecker.getStudentByID("12345");
 
