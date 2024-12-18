@@ -6,26 +6,71 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.HashSet;
 
+/**
+ * نظام تصحيح الامتحانات متعدد الميزات
+ *
+ * يوفر هذا النظام وظائف متقدمة لتصحيح الامتحانات وحساب الدرجات
+ * مع دعم العديد من السيناريوهات المختلفة
+ *
+ * @author IXRAHEEM   المطور
+ * @version 1.3
+ */
 public class ExamChecker {
+
+    /** قائمة الخيارات الصالحة للإجابات */
     private List<Character> validOptions =
-            List.of('A', 'B', 'C', 'D', 'E',' '); // تأكد من جعل الخيارات قابلة للتعديل
+            List.of('A', 'B', 'C', 'D', 'E',' ');
+
+    /** مؤشرات الأسئلة الثابتة الإجابة */
     private List<Integer> alwaysCorrectIndex;
+
+    /** قائمة الإجابات الصحيحة للامتحان */
     private List<Character> correctAnswers;
+
+    /** إجابات الطالب */
     private List<Character> studentAnswers;
+
+    /** مؤشرات الإجابات غير الصحيحة */
     private List<Integer> incorrectIndices;
+
+    /** قائمة الطلاب */
     private List<Student> students;
+
+    /** الطالب الحالي */
     private Student student;
+
+    /** أوزان الأسئلة */
     private Map<Integer, Double> questionWeights;
+
+    /** عدد الإجابات الصحيحة */
     private int correctCount;
+
+    /** عدد الإجابات الخاطئة */
     private int incorrectCount;
+
+    /** الدرجة القصوى للامتحان */
     private double maxScore;
+
+    /** مؤشر فحص الإجابات */
     private boolean isChecked;
+
+    /** وضع الخطأ مقابل الصحيح */
     private boolean wrongVersusRight;
 
+    /**
+     * المنشئ الافتراضي لإنشاء كائن ExamChecker
+     * يقوم بتهيئة جميع المتغيرات الأساسية
+     */
     public ExamChecker() {
         initialize();
     }
 
+    /**
+     * منشئ لإنشاء كائن ExamChecker مع الإجابات الصحيحة والطالب
+     *
+     * @param correctAnswers قائمة الإجابات الصحيحة
+     * @param student الطالب المراد تصحيح إجابته
+     */
     public ExamChecker(List<Character> correctAnswers, Student student) {
         initialize();
         this.correctAnswers = correctAnswers;
@@ -45,6 +90,10 @@ public class ExamChecker {
         this.studentAnswers = studentAnswers;
     }
 
+    /**
+     * تهيئة المتغيرات الأساسية للنظام
+     * يضمن إعداد القيم الافتراضية بشكل صحيح
+     */
     private void initialize() {
         correctAnswers = new ArrayList<>();
         studentAnswers = new ArrayList<>();
@@ -58,6 +107,13 @@ public class ExamChecker {
         incorrectCount = 0;
     }
 
+    /**
+     * تعيين وزن لسؤال محدد
+     *
+     * @param questionIndex مؤشر السؤال
+     * @param weight الوزن المخصص للسؤال
+     * @throws IllegalStateException إذا كان وضع "الخطأ مقابل الصحيح" مفعلاً
+     */
     public void setQuestionWeight(int questionIndex, double weight) {
         if (wrongVersusRight){
             System.err.println("You can't set weights when wrongVersusRight is On\n");
@@ -247,16 +303,26 @@ public class ExamChecker {
         }
     }
 
+    /**
+     * حساب الدرجة النهائية للطالب
+     * يدعم عدة آليات للحساب بما في ذلك الأوزان ووضع "الخطأ مقابل الصحيح"
+     *
+     * @return الدرجة المحسوبة بدقة قسمتين عشريتين
+     */
     private double calculateScore() {
         checkAnswers();
 
+        // حالة عدم وجود أوزان
         if (questionWeights.isEmpty()) {
             if (wrongVersusRight) {
+                // خوارزمية الدرجة في وضع الخطأ مقابل الصحيح
                 return ((double) Math.max(0, correctCount - (incorrectCount / 3)) / correctAnswers.size()) * maxScore;
             }
+            // الحساب الافتراضي للدرجة
             return ((double) correctCount / correctAnswers.size()) * maxScore;
         }
 
+        // حساب الدرجة مع الأوزان
         double totalWeight = 0.0;
         for (int i = 0; i < correctAnswers.size(); i++) {
             totalWeight += questionWeights.getOrDefault(i, 1.0);
@@ -277,19 +343,8 @@ public class ExamChecker {
         return totalScore;
     }
 
-    @Override
-    public String toString() {
-        checkAnswers();
-        StringBuilder result = new StringBuilder();
-        result.append("=== Exam Results ===\n");
-        if (student != null){
-            result.append(student);
-        }
-        result.append("Correct Answers: ").append(correctCount).append("\n");
-        result.append("Incorrect Answers: ").append(incorrectCount).append("\n");
-        result.append("Final Score: ").append(String.format("%.2f", calculateScore()))
-                .append(" / ").append(maxScore).append("\n");
-
+    // طرق مساعدة لتحسين القراءة والصيانة
+    private void appendIncorrectIndices(StringBuilder result) {
         if (!incorrectIndices.isEmpty()) {
             result.append("Incorrect Answer Positions: ");
             for (int index : incorrectIndices) {
@@ -297,13 +352,43 @@ public class ExamChecker {
             }
             result.append("\n");
         }
+    }
 
+    private void appendQuestionWeights(StringBuilder result) {
         if (!questionWeights.isEmpty()) {
             result.append("Question Weights: ");
             questionWeights.forEach((index, weight) ->
                     result.append("Q").append(index + 1).append(": ").append(weight).append(" "));
             result.append("\n");
         }
+    }
+
+    /**
+     * طباعة تفصيلية لنتائج الامتحان
+     * توفر معلومات شاملة عن أداء الطالب
+     *
+     * @return سلسلة نصية تحتوي على تفاصيل النتائج
+     */
+    @Override
+    public String toString() {
+        checkAnswers();
+        StringBuilder result = new StringBuilder();
+        result.append("=== Exam Results ===\n");
+
+        // معلومات الطالب
+        if (student != null) {
+            result.append(student);
+        }
+
+        // إحصائيات التصحيح
+        result.append("Correct Answers: ").append(correctCount).append("\n");
+        result.append("Incorrect Answers: ").append(incorrectCount).append("\n");
+        result.append("Final Score: ").append(String.format("%.2f", calculateScore()))
+                .append(" / ").append(maxScore).append("\n");
+
+        // تفاصيل إضافية
+        appendIncorrectIndices(result);
+        appendQuestionWeights(result);
 
         return result.toString();
     }
