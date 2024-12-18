@@ -1,10 +1,8 @@
 package corrector.exam;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.HashSet;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * نظام تصحيح الامتحانات متعدد الميزات
@@ -13,7 +11,7 @@ import java.util.HashSet;
  * مع دعم العديد من السيناريوهات المختلفة
  *
  * @author IXRAHEEM   المطور
- * @version 1.3
+ * @version 1.4
  */
 public class ExamChecker {
 
@@ -88,6 +86,100 @@ public class ExamChecker {
         initialize();
         this.correctAnswers = correctAnswers;
         this.studentAnswers = studentAnswers;
+    }
+
+    public void saveInformation(boolean saveInformation) {
+        if (saveInformation) {
+            informationWriter();
+        }
+    }
+
+    private void informationWriter() {
+        try {
+            // Create a filename based on the current date
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+            String timestamp = dateFormat.format(new Date());
+            String filename = "exam_results_" + timestamp + ".txt";
+
+            // Create the file in a dedicated results directory
+            File resultsDir = new File("exam_results");
+            if (!resultsDir.exists()) {
+                resultsDir.mkdirs(); // Create directory if it doesn't exist
+            }
+
+            File resultFile = new File(resultsDir, filename);
+
+            // Use try-with-resources to ensure proper file closing
+            try (PrintWriter writer = new PrintWriter(new FileWriter(resultFile))) {
+                writer.println("=== Comprehensive Exam Results ===");
+                writer.println("Generated: " + new Date());
+                writer.println("Total Students: " + students.size());
+                writer.println("Total Questions: " + (correctAnswers != null ? correctAnswers.size() : "N/A"));
+                writer.println("\n");
+
+                // Track overall exam statistics
+                int totalStudents = 0;
+                double totalScores = 0;
+
+                // Iterate through all students
+                for (Student currentStudent : students) {
+                    // Temporarily set the current student and their answers
+                    this.student = currentStudent;
+                    this.studentAnswers = currentStudent.getAnswers();
+
+                    // Ensure answers are checked
+                    checkAnswers();
+
+                    // Write individual student results
+                    writer.println("--- Student Result ---");
+                    writer.println("Student ID: " + currentStudent.getStudentId());
+                    writer.println("Student Name: " + currentStudent.getName());
+                    writer.println("Correct Answers: " + correctCount);
+                    writer.println("Incorrect Answers: " + incorrectCount);
+                    writer.printf("Score: %.2f / %.2f%n", getScore(), maxScore);
+
+                    // Write detailed answer breakdown
+                    writer.println("\nDetailed Answer Breakdown:");
+                    for (int i = 0; i < Math.min(correctAnswers.size(), studentAnswers.size()); i++) {
+                        writer.printf("Q%d: C/A = %c, S/A = %c, R = %s%n",
+                                i + 1,
+                                correctAnswers.get(i),
+                                studentAnswers.get(i),
+                                alwaysCorrectIndex.contains(i) || correctAnswers.get(i).equals(studentAnswers.get(i)) ?
+                                        "True" : "False"
+                        );
+                    }
+                    writer.println("\n=================================");
+
+                    // Accumulate overall statistics
+                    totalStudents++;
+                    totalScores += getScore();
+                }
+
+                // Write overall exam summary
+                writer.println("=== Exam Summary ===");
+                writer.println("Total Students: " + totalStudents);
+                writer.printf("Average Score: %.2f / %.2f%n",
+                        totalScores / totalStudents, maxScore);
+
+                // Additional exam mode details
+                writer.println("\n--- Exam Configuration ---");
+                writer.println("Wrong vs Right Mode: " + (wrongVersusRight ? "Enabled" : "Disabled"));
+                writer.println("Valid Answer Options: " + validOptions);
+
+                if (!questionWeights.isEmpty()) {
+                    writer.println("\nQuestion Weights:");
+                    questionWeights.forEach((index, weight) ->
+                            writer.printf("Question %d: Weight = %.2f%n", index + 1, weight)
+                    );
+                }
+
+            } catch (IOException e) {
+                System.err.println("Error writing exam result file: " + e.getMessage());
+            }
+        } catch (Exception e) {
+            System.err.println("Unexpected error in information writing: " + e.getMessage());
+        }
     }
 
     /**
